@@ -1,0 +1,147 @@
+#include <Arduino.h>
+#include <Display.h>
+//var
+int lichtshow = 0;
+const int BUTTON_1 = 8;
+const int BUTTON_2 = 9;
+const int PIN_LED_RED = 4;
+const int PIN_LED_GREEN = 5;
+const int PIN_LED_BLUE = 6;
+const int PIN_LED_YELLOW = 7;
+int counterset = 0;
+int counter = 0;
+int teller = 0;
+int buttonState_1 = 0;
+int buttonState_2 = 0;
+int lastbuttonstate_1 = 0;
+int lastbuttonstate_2 = 0;
+unsigned long time;
+unsigned long currenttime;
+int knipper = 1;
+int programma1 = 0;
+int programma2 = 0;
+int choice = 0;
+int i = 0;
+int bright = 0;
+String message;
+boolean codevault = true;
+
+int draai = 0;
+int lampjes = 0;
+int terug[]={0,0,0,0};
+int example[]={1,3,5};
+int code[]={1,2,2,1};
+String codeterminal = "1221";
+int ter[] = {0,0,0,0};
+  
+
+  
+//functie keuzen menu
+void set()
+{
+  pinMode(BUTTON_1, INPUT_PULLUP);
+  pinMode(BUTTON_2, INPUT_PULLUP);
+
+  Serial.begin(9600);
+  pinMode(PIN_LED_RED, OUTPUT);
+  pinMode(PIN_LED_GREEN, OUTPUT);
+  pinMode(PIN_LED_BLUE, OUTPUT);
+  pinMode(PIN_LED_YELLOW, OUTPUT);
+  time = millis();
+}
+
+
+void second()
+{
+  currenttime = millis();
+  if (currenttime - time >= 1000)// currenttime is in milliseconden. als dit groter is dan 1000 (1 sec) voer loop uit.
+  {
+
+    time = currenttime;
+  } 
+}
+
+void lichtshow1()
+{
+  currenttime = millis();
+  if (currenttime - time >= 1000)// currenttime is in milliseconden. als dit groter is dan 1000 (1 sec) voer loop uit.
+  {
+    time = currenttime;
+    if( knipper == 1)
+      {
+        digitalWrite(PIN_LED_RED, HIGH);
+        digitalWrite(PIN_LED_YELLOW, LOW);
+        knipper = 2;
+      }
+      else if ( knipper == 2)
+      {
+        digitalWrite(PIN_LED_RED, LOW);
+        digitalWrite(PIN_LED_GREEN, HIGH);
+        knipper = 3;
+      }
+      else if ( knipper == 3)
+      {
+        digitalWrite(PIN_LED_BLUE, HIGH);
+        digitalWrite(PIN_LED_GREEN, LOW);
+        knipper = 4;
+      }
+      else if ( knipper == 4)
+      {
+        digitalWrite(PIN_LED_BLUE, LOW);
+        digitalWrite(PIN_LED_YELLOW, HIGH);
+        knipper = 1;
+      }
+  } 
+}
+
+void lichtshow2()
+{
+  currenttime = millis();
+  if (currenttime - time >= 1000)// currenttime is in milliseconden. als dit groter is dan 1000 (1 sec) voer loop uit.
+  {
+    time = currenttime;
+    if( knipper == 1)
+      {
+        digitalWrite(PIN_LED_BLUE, HIGH);
+        digitalWrite(PIN_LED_GREEN, LOW);
+        knipper = 2;
+      }
+      else if ( knipper == 2)
+      {
+        digitalWrite(PIN_LED_BLUE, LOW);
+        digitalWrite(PIN_LED_RED, HIGH);
+        knipper = 3;
+      }
+      else if ( knipper == 3)
+      {
+        digitalWrite(PIN_LED_YELLOW, HIGH);
+        digitalWrite(PIN_LED_RED, LOW);
+        knipper = 4;
+      }
+      else if ( knipper == 4)
+      {
+        digitalWrite(PIN_LED_YELLOW, LOW);
+        digitalWrite(PIN_LED_GREEN, HIGH);
+        knipper = 1;
+      }
+  } 
+}
+
+
+void terminal()
+{
+if (Serial.available() > 0)
+  {
+    char received = Serial.read();
+
+    if (received == '1' || received == '2' || received == '3' || received == '4') // Message is finished, so process message.
+    {
+      knipper = 1;
+      digitalWrite(PIN_LED_RED, LOW);
+      digitalWrite(PIN_LED_GREEN, LOW);
+      digitalWrite(PIN_LED_BLUE, LOW);
+      digitalWrite(PIN_LED_YELLOW, LOW);
+      message = received;
+    }
+  }
+}
