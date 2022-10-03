@@ -1,0 +1,21 @@
+#include <functions.h>
+
+void setup() 
+{
+set();
+}
+
+void loop() 
+{
+  terminal();
+  lichtshow = message.toInt();
+  switch (lichtshow - 1) 
+  {
+    case 0:
+    lichtshow1();
+    break;
+    case 1:
+    lichtshow2();
+    break;
+  }
+}
